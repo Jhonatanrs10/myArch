@@ -22,15 +22,15 @@ read PASSWORD
 
 #executing
 
-mkfs.fat -F 32 "${EFI}"
+mkfs.vfat -F32 -n "EFISYSTEM" "${EFI}"
 mkswap "${SWAP}"
 swapon "${SWAP}"
-mkfs.ext4 "${ROOT}"
+mkfs.ext4 -L "ROOT" "${ROOT}"
 
 # mount target
-mount "${ROOT}" /mnt
-mkdir -p /mnt/boot/efi
-mount "${EFI}" /mnt/boot/efi
+mount -t ext4 "${ROOT}" /mnt
+mkdir /mnt/boot
+mount -t vfat "${EFI}" /mnt/boot/
 
 lsblk
 sleep 5
@@ -48,7 +48,7 @@ echo "--------------------------------------"
 pacstrap /mnt networkmanager network-manager-applet wireless_tools nano intel-ucode git sof-firmware grub efibootmgr terminology ntfs-3g dosfstools os-prober --noconfirm --needed
 
 # fstab
-genfstab /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >> /mnt/etc/fstab
 
 # next
 cat <<REALEND > /mnt/next.sh
@@ -66,9 +66,8 @@ echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
 echo "arch" > /etc/hostname
 systemctl enable NetworkManager
-grub-install /dev/sda
-grub-mkconfig -o /boot/grub/grub.cfg
-
+#grub-install /dev/sda
+#grub-mkconfig -o /boot/grub/grub.cfg
 exit
 
 REALEND
