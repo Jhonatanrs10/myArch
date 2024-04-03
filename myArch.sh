@@ -31,18 +31,10 @@ mount "${ROOT}" /mnt
 mkdir -p /mnt/boot/efi
 mount "${EFI}" /mnt/boot/efi
 
-lsblk
-sleep 5
-
-echo "--------------------------------------"
 echo "INSTALLING myArch Linux BASE on Main Drive"
-echo "--------------------------------------"
-
 pacstrap /mnt base base-devel linux linux-firmware networkmanager network-manager-applet wireless_tools nano intel-ucode git sof-firmware grub efibootmgr terminology ntfs-3g dosfstools os-prober --noconfirm --needed
 
 # fstab
-genfstab /mnt
-sleep 5
 genfstab /mnt >> /mnt/etc/fstab
 
 # next
@@ -62,9 +54,7 @@ echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
 echo "arch" > /etc/hostname
 systemctl enable NetworkManager
 grub-install /dev/sda
-sleep 10
 grub-mkconfig -o /boot/grub/grub.cfg
-sleep 10
 exit
 REALEND
 
