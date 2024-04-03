@@ -28,9 +28,9 @@ swapon "${SWAP}"
 mkfs.ext4 "${ROOT}"
 
 # mount target
-mount -t ext4 "${ROOT}" /mnt
+mount "${ROOT}" /mnt
 mkdir -p /mnt/boot/efi
-mount -t vfat "${EFI}" /mnt/boot/efi
+mount "${EFI}" /mnt/boot/efi
 
 lsblk
 sleep 5
