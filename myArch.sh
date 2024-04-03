@@ -49,6 +49,8 @@ genfstab /mnt >> /mnt/etc/fstab
 cat <<REALEND > /mnt/next.sh
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
+echo "Root Password"
+passwd
 useradd -m $USER
 usermod -aG wheel,storage,power,audio $USER
 echo $USER:$PASSWORD | chpasswd
