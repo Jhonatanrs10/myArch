@@ -48,7 +48,7 @@ echo "--------------------------------------"
 pacstrap /mnt networkmanager network-manager-applet wireless_tools nano intel-ucode git sof-firmware grub efibootmgr terminology ntfs-3g dosfstools os-prober --noconfirm --needed
 
 # fstab
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab /mnt >> /mnt/etc/fstab
 
 # next
 cat <<REALEND > /mnt/next.sh
