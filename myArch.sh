@@ -62,7 +62,9 @@ echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
 echo "arch" > /etc/hostname
 systemctl enable NetworkManager
 grub-install /dev/sda
+sleep 10
 grub-mkconfig -o /boot/grub/grub.cfg
+sleep 10
 exit
 REALEND
 
