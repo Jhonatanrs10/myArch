@@ -21,11 +21,10 @@ echo "Please enter your password"
 read PASSWORD 
 
 #executing
-
-mkfs.fat -F 32 -n "EFISYSTEM" "${EFI}"
+mkfs.ext4 "${ROOT}"
+mkfs.fat -F 32 "${EFI}"
 mkswap "${SWAP}"
 swapon "${SWAP}"
-mkfs.ext4 -L "ROOT" "${ROOT}"
 
 # mount target
 mount "${ROOT}" /mnt
@@ -61,7 +60,6 @@ echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
 echo "arch" > /etc/hostname
 systemctl enable NetworkManager
 grub-install /dev/sda
-sleep 5
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
 REALEND
