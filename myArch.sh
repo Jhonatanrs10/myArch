@@ -43,7 +43,7 @@ pacstrap /mnt base base-devel linux linux-firmware networkmanager network-manage
 # fstab
 genfstab /mnt
 sleep 5
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab /mnt >> /mnt/etc/fstab
 
 # next
 cat <<REALEND > /mnt/next.sh
