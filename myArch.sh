@@ -1,43 +1,55 @@
 #!/usr/bin/env bash
 
+myBase="xorg pulseaudio pulseaudio-bluetooth samba xarchiver papirus-icon-theme breeze-gtk xcursor-comix ntfs-3g dosfstools os-prober nano vimp git neofetch gufw gst-plugins-ugly gst-plugins-good gst-plugins-base gst-plugins-bad gst-libav gstreamer ffmpeg fwupd samba gvfs-smb flatpak gvfs gvfs-mtp gvfs-smb udisks2 polkit polkit-gnome net-tools bluez bluez-tools bluez-utils man-db gnu-free-fonts noto-fonts noto-fonts-cjk noto-fonts-emoji cmatrix htop"
+myI3wm="i3 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon pcmanfm scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools"
+myGnome="gnome gdm"
+myApps="gparted chromium firefox code vlc mpv"
+
+
 loadkeys br-abnt
 cfdisk
 clear
 lsblk
 
-echo "Please enter EFI paritition: (example /dev/sda1 or /dev/nvme0n1p1)"
+echo "Digite o caminho da particao EFI: (exemplo /dev/sda1)"
 read EFI
 
-echo "Please enter SWAP paritition: (example /dev/sda2)"
+echo "Digite o caminho da particao SWAP: (exemplo /dev/sda2)"
 read SWAP
 
-echo "Please enter Root(/) paritition: (example /dev/sda3)"
+echo "Digite o caminho da particao Root(/): (exemplo /dev/sda3)"
 read ROOT 
 
-echo "Please enter your username"
+echo "Digite seu nome de usuario:"
 read USER 
 
-echo "Please enter your password"
+echo "Digite sua senha de usuario/root"
 read PASSWORD 
 
-#executing
+echo "Escolha qual interface usar:"
+echo "1. I3WM"
+echo "2. GNOME"
+echo "3. NoDesktop"
+read DESKTOP
+
+# Configurando Particoes
 mkfs.ext4 "${ROOT}"
 mkfs.fat -F 32 "${EFI}"
 mkswap "${SWAP}"
 swapon "${SWAP}"
 
-# mount target
+# Montando Particoes
 mount "${ROOT}" /mnt
 mkdir -p /mnt/boot/efi
 mount "${EFI}" /mnt/boot/efi
 
-echo "INSTALLING myArch Linux BASE on Main Drive"
-pacstrap /mnt base base-devel linux linux-firmware networkmanager network-manager-applet wireless_tools nano intel-ucode git sof-firmware grub efibootmgr terminology ntfs-3g dosfstools os-prober --noconfirm --needed
+# Linux Base
+pacstrap /mnt base base-devel linux linux-firmware networkmanager nano intel-ucode git sof-firmware grub efibootmgr ntfs-3g dosfstools os-prober --noconfirm --needed
 
-# fstab
+# Fstab
 genfstab /mnt >> /mnt/etc/fstab
 
-# next
+# Next
 cat <<REALEND > /mnt/next.sh
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
@@ -51,8 +63,30 @@ sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
-echo "arch" > /etc/hostname
-systemctl enable NetworkManager
+setxkbmap -model abnt2 -layout br
+echo "setxkbmap -model abnt2 -layout br" >> ~/.profile
+sudo tee /etc/X11/xorg.conf.d/10-evdev.conf <<< 'Section "InputClass"
+Identifier "evdev keyboard catchall"
+MatchIsKeyboard "on"
+MatchDevicePath "/dev/input/event*"
+Driver "evdev"
+Option "XkbLayout" "br"
+Option "XkbVariant" "abnt2"
+EndSection'
+echo "Arch" > /etc/hostname
+pacman -S $myBase
+systemctl enable NetworkManager bluetooth
+if [[ $DESKTOP == '1' ]]
+then 
+    pacman -S $myI3wm $myApps --noconfirm --needed
+    systemctl enable lightdm
+elif [[ $DESKTOP == '2' ]]
+then
+    pacman -S $myGnome $myApps --noconfirm --needed
+    systemctl enable gdm
+else
+    echo "Sem interface"
+fi
 grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
