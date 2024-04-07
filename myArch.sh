@@ -3,7 +3,7 @@
 myBase="pulseaudio pulseaudio-bluetooth samba xarchiver papirus-icon-theme breeze-gtk xcursor-comix ntfs-3g dosfstools os-prober nano vim git neofetch gufw gst-plugins-ugly gst-plugins-good gst-plugins-base gst-plugins-bad gst-libav gstreamer ffmpeg fwupd samba gvfs-smb flatpak gvfs gvfs-mtp gvfs-smb udisks2 polkit polkit-gnome net-tools bluez bluez-tools bluez-utils man-db gnu-free-fonts noto-fonts noto-fonts-cjk noto-fonts-emoji cmatrix htop"
 myI3wm="i3 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon pcmanfm scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools"
 myGnome="gnome gdm"
-myApps="gparted chromium firefox code vlc mpv"
+myApps="gparted chromium firefox code vlc mpv qbittorrent gimp inkscape shotcut"
 
 loadkeys br-abnt
 cfdisk
@@ -80,16 +80,6 @@ sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
-setxkbmap -model abnt2 -layout br
-echo "setxkbmap -model abnt2 -layout br" >> ~/.profile
-sudo tee /etc/X11/xorg.conf.d/10-evdev.conf <<< 'Section "InputClass"
-Identifier "evdev keyboard catchall"
-MatchIsKeyboard "on"
-MatchDevicePath "/dev/input/event*"
-Driver "evdev"
-Option "XkbLayout" "br"
-Option "XkbVariant" "abnt2"
-EndSection'
 echo "Arch" > /etc/hostname
 pacman -S $myBase
 systemctl enable NetworkManager bluetooth
