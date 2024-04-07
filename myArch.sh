@@ -9,7 +9,8 @@ loadkeys br-abnt
 cfdisk
 clear
 lsblk
-
+sleep 5
+clear
 echo "Digite o caminho da particao EFI: (exemplo /dev/sda1)"
 read EFI
 
@@ -35,6 +36,7 @@ mkdir -p /mnt/home
 mount "${EFI}" /mnt/boot/efi
 if [[ $HOME == 'yes' ]]
 then
+    lsblk
     echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
     read HOME
     mkfs.ext4 "${HOME}"
@@ -43,10 +45,13 @@ else
     echo "Home no /"
 fi
 
+clear
+lsblk
+
 echo "Digite seu nome de usuario:"
 read USER 
 
-echo "Digite sua senha de usuario/root"
+echo "Digite sua senha de usuario"
 read PASSWORD 
 
 echo "Escolha qual interface usar:"
@@ -65,7 +70,7 @@ genfstab /mnt >> /mnt/etc/fstab
 cat <<REALEND > /mnt/next.sh
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
-echo "Root Password"
+echo "Digite a senha do usuario Root"
 passwd
 useradd -m $USER
 usermod -aG wheel,storage,power,audio $USER
