@@ -44,6 +44,7 @@ if [[ $HOME == 'yes' ]]
 then
     echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
     read HOME
+    mkfs.ext4 "${HOME}"
     mount "${HOME}" /mnt/home
 else
     echo "Home no /"
