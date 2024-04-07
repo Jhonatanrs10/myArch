@@ -5,7 +5,6 @@ myI3wm="i3 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager
 myGnome="gnome gdm"
 myApps="gparted chromium firefox code vlc mpv"
 
-
 loadkeys br-abnt
 cfdisk
 clear
@@ -22,12 +21,6 @@ read ROOT
 
 echo "Digite (yes) para criar uma particao Home separada"
 read HOME 
-
-echo "Digite seu nome de usuario:"
-read USER 
-
-echo "Digite sua senha de usuario/root"
-read PASSWORD 
 
 # Configurando Particoes
 mkfs.ext4 "${ROOT}"
@@ -49,6 +42,12 @@ then
 else
     echo "Home no /"
 fi
+
+echo "Digite seu nome de usuario:"
+read USER 
+
+echo "Digite sua senha de usuario/root"
+read PASSWORD 
 
 echo "Escolha qual interface usar:"
 echo "1. I3WM"
