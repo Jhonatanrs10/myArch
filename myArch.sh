@@ -20,17 +20,14 @@ read SWAP
 echo "Digite o caminho da particao Root(/): (exemplo /dev/sda3)"
 read ROOT 
 
+echo "Digite (yes) para criar uma particao Home separada"
+read HOME 
+
 echo "Digite seu nome de usuario:"
 read USER 
 
 echo "Digite sua senha de usuario/root"
 read PASSWORD 
-
-echo "Escolha qual interface usar:"
-echo "1. I3WM"
-echo "2. GNOME"
-echo "3. NoDesktop"
-read DESKTOP
 
 # Configurando Particoes
 mkfs.ext4 "${ROOT}"
@@ -41,7 +38,22 @@ swapon "${SWAP}"
 # Montando Particoes
 mount "${ROOT}" /mnt
 mkdir -p /mnt/boot/efi
+mkdir -p /mnt/home
 mount "${EFI}" /mnt/boot/efi
+if [[ $HOME == 'yes' ]]
+then
+    echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
+    read HOME
+    mount "${HOME}" /mnt/home
+else
+    echo "Home no /"
+fi
+
+echo "Escolha qual interface usar:"
+echo "1. I3WM"
+echo "2. GNOME"
+echo "3. NoDesktop"
+read DESKTOP
 
 # Linux Base
 pacstrap /mnt base base-devel linux linux-firmware networkmanager nano intel-ucode git sof-firmware grub efibootmgr ntfs-3g dosfstools os-prober --noconfirm --needed
