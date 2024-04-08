@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 myBase="pulseaudio pulseaudio-bluetooth samba xarchiver papirus-icon-theme breeze-gtk xcursor-comix ntfs-3g dosfstools os-prober nano vim git neofetch gufw gst-plugins-ugly gst-plugins-good gst-plugins-base gst-plugins-bad gst-libav gstreamer ffmpeg fwupd samba gvfs-smb flatpak gvfs gvfs-mtp gvfs-smb udisks2 polkit polkit-gnome net-tools bluez bluez-tools bluez-utils man-db gnu-free-fonts noto-fonts noto-fonts-cjk noto-fonts-emoji cmatrix htop"
-myI3wm="i3 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon pcmanfm scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools"
+myI3wm="i3 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon pcmanfm scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools xreader mpv"
 myGnome="gnome gdm"
-myApps="gparted chromium firefox code vlc mpv qbittorrent gimp inkscape shotcut"
+myApps="gparted chromium code qbittorrent gimp inkscape shotcut"
 
 loadkeys br-abnt
 cfdisk
@@ -24,16 +24,23 @@ echo "Digite (yes) para criar uma particao Home separada"
 read HOME 
 
 # Configurando Particoes
+echo "Digite (yes) para formatar a particao EFI (em caso de dualboot digite nao)"
+read NEWEFI
+
+if [[ $NEWEFI == 'yes' ]]
+then
+    mkfs.fat -F 32 "${EFI}"
+fi
+
 mkfs.ext4 "${ROOT}"
-mkfs.fat -F 32 "${EFI}"
 mkswap "${SWAP}"
 swapon "${SWAP}"
 
 # Montando Particoes
 mount "${ROOT}" /mnt
-mkdir -p /mnt/boot/efi
+mkdir -p /mnt/boot
 mkdir -p /mnt/home
-mount "${EFI}" /mnt/boot/efi
+mount "${EFI}" /mnt/boot
 if [[ $HOME == 'yes' ]]
 then
     lsblk
@@ -41,8 +48,6 @@ then
     read HOME
     mkfs.ext4 "${HOME}"
     mount "${HOME}" /mnt/home
-else
-    echo "Home no /"
 fi
 
 clear
@@ -80,7 +85,13 @@ sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
-echo "Arch" > /etc/hostname
+echo "arch" > /etc/hostname
+echo "arch" > /etc/hostname
+cat <<EOF > /etc/hosts
+127.0.0.1	localhost
+::1			localhost
+127.0.1.1	arch.localdomain	arch
+EOF
 pacman -S $myBase
 systemctl enable NetworkManager bluetooth
 if [[ $DESKTOP == '1' ]]
@@ -94,7 +105,8 @@ then
 else
     echo "Sem interface"
 fi
-grub-install /dev/sda
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+#grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
 REALEND
