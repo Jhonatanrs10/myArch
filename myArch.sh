@@ -6,11 +6,15 @@ myGnome="gnome gdm"
 myApps="gparted chromium code qbittorrent gimp inkscape shotcut"
 
 loadkeys br-abnt
-cfdisk
+while [ "$EXITWHILE" != "yes" ];
+do
+    cfdisk
+    echo "Digite yes para sair do CFDISK"
+    read EXITWHILE
+done
 clear
 lsblk
-sleep 5
-clear
+sleep 2
 echo "Digite o caminho da particao EFI: (exemplo /dev/sda1)"
 read EFI
 
