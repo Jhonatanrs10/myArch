@@ -110,7 +110,6 @@ else
     echo "Sem interface"
 fi
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-#grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
 REALEND
