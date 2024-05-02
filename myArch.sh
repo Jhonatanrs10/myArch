@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-myApps="gparted chromium code qbittorrent gimp inkscape shotcut"
 myBase="pulseaudio pulseaudio-bluetooth samba xarchiver papirus-icon-theme breeze-gtk xcursor-comix ntfs-3g dosfstools os-prober nano vim git neofetch gufw gst-plugins-ugly gst-plugins-good gst-plugins-base gst-plugins-bad gst-libav gstreamer ffmpeg fwupd samba gvfs-smb flatpak gvfs gvfs-mtp gvfs-smb udisks2 polkit polkit-gnome net-tools bluez bluez-tools bluez-utils joyutils man-db gnu-free-fonts noto-fonts noto-fonts-cjk noto-fonts-emoji cmatrix htop"
-myI3wm="i3 picom lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon thunar thunar-archive-plugin thunar-media-tags-plugin thunar-volman scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager xfce4-appfinder galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools xreader mpv"
+myI3wm="i3 picom lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon thunar thunar-archive-plugin thunar-media-tags-plugin thunar-volman scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager xfce4-appfinder galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools xreader mpv gparted chromium code qbittorrent"
 myXfce="xfce4 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager xfce4-screenshooter xfce4-pulseaudio-plugin blueman pavucontrol thunar thunar-archive-plugin thunar-media-tags-plugin thunar-volman network-manager-applet xreader mpv galculator system-config-printer"
-
+myGnome="gnome gdm"
 
 loadkeys br-abnt
 while [ "$EXITWHILE" != "yes" ];
 do
-    cfdisk
+    lsblk
+    echo "Digite o caminho da particao/disco: (exemplo /dev/sda1)"
+    read BARRADEV
+    cfdisk $BARRADEV
     echo "Digite yes para sair do CFDISK"
     read EXITWHILE
 done
@@ -100,11 +102,11 @@ pacman -S $myBase
 systemctl enable NetworkManager bluetooth
 if [[ $DESKTOP == '1' ]]
 then 
-    pacman -S $myI3wm $myApps --noconfirm --needed
+    pacman -S $myI3wm --noconfirm --needed
     systemctl enable lightdm
 elif [[ $DESKTOP == '2' ]]
 then
-    pacman -S $myGnome $myApps --noconfirm --needed
+    pacman -S $myGnome --noconfirm --needed
     systemctl enable gdm
 else
     echo "Sem interface"
@@ -115,7 +117,9 @@ exit
 REALEND
 
 arch-chroot /mnt sh next.sh
-umount -a
 
-echo "Fim do myArch.sh"
+echo "Final Manual Commands
+umount -a
+reboot
+"
 
