@@ -8,10 +8,10 @@ loadkeys br-abnt
 while [ "$EXITWHILE" != "yes" ];
 do
     lsblk
-    echo "Digite o caminho da particao/disco: (exemplo /dev/sda1)"
+    echo "[CFDISK] Digite o caminho da particao/disco: (exemplo /dev/sda1)"
     read BARRADEV
     cfdisk $BARRADEV
-    echo "Digite yes para sair do CFDISK"
+    echo "Digite (yes) para sair do CFDISK"
     read EXITWHILE
 done
 clear
@@ -24,13 +24,13 @@ echo "Digite o caminho da particao SWAP: (exemplo /dev/sda2)"
 read SWAP
 
 echo "Digite o caminho da particao Root(/): (exemplo /dev/sda3)"
-read ROOT 
+read ROOT
 
 echo "Digite (yes) para criar uma particao Home separada"
 read HOME 
 
 # Configurando Particoes
-echo "Digite (yes) para formatar a particao EFI (em caso de dualboot digite nao)"
+echo "Digite (yes) para formatar a particao EFI: (em caso de dualboot digite nao)"
 read NEWEFI
 
 if [[ $NEWEFI == 'yes' ]]
@@ -52,7 +52,12 @@ then
     lsblk
     echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
     read HOME
-    mkfs.ext4 "${HOME}"
+    echo "Digite (yes) para formatar a Home:"
+    read NEWHOME
+    if [[ $NEWHOME == 'yes' ]]
+    then
+        mkfs.ext4 "${HOME}"
+    fi
     mount "${HOME}" /mnt/home
 fi
 
