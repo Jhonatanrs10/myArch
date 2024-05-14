@@ -6,13 +6,13 @@ myGnome="gnome gdm"
 myNvidia="nvidia nvidia-settings nvidia-utils lib32-nvidia-utils libva-nvidia-driver cuda opencl-nvidia lib32-opencl-nvidia vdpauinfo clinfo"
 
 loadkeys br-abnt
-while [ "$EXITWHILE" != "yes" ];
+while [ $EXITWHILE != 1 ];
 do
     lsblk
-    echo "[CFDISK] Digite o caminho da particao/disco: (exemplo /dev/sda1)"
+    echo "[CFDISK] Digite o caminho da particao/disco: (exemplo /dev/sda)"
     read BARRADEV
     cfdisk $BARRADEV
-    echo "Digite (yes) para sair do CFDISK"
+    echo "Digite (1) para sair do CFDISK"
     read EXITWHILE
 done
 
@@ -28,14 +28,14 @@ read SWAP
 echo "Digite o caminho da particao Root(/): (exemplo /dev/sda3)"
 read ROOT
 
-echo "Digite (yes) para criar uma particao Home separada"
+echo "Digite (1) para criar uma particao Home separada"
 read HOME 
 
 # Configurando Particoes
-echo "Digite (yes) para formatar a particao EFI ($EFI):"
+echo "Digite (1) para formatar a particao EFI ($EFI):"
 read NEWEFI
 
-if [[ "$NEWEFI" == "yes" ]]
+if [[ $NEWEFI == 1 ]]
 then
     mkfs.fat -F 32 "${EFI}"
 fi
@@ -49,14 +49,14 @@ mount "${ROOT}" /mnt
 mkdir -p /mnt/boot
 mkdir -p /mnt/home
 mount "${EFI}" /mnt/boot
-if [[ "$HOME" == "yes" ]]
+if [[ $HOME == 1 ]]
 then
     lsblk
     echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
     read HOME
-    echo "Digite (yes) para formatar a Home ($HOME):"
+    echo "Digite (1) para formatar a Home ($HOME):"
     read NEWHOME
-    if [[ "$NEWHOME" == "yes" ]]
+    if [[ $NEWHOME == 1 ]]
     then
         mkfs.ext4 "${HOME}"
     fi
@@ -106,9 +106,9 @@ cat <<EOF > /etc/hosts
 127.0.1.1	arch.localdomain	arch
 EOF
 pacman -S $myBase
-echo "Digite (yes) para instalar os drivers proprietarios da Nvidia"
+echo "Digite (1) para instalar os drivers proprietarios da Nvidia"
 read NVIDIA
-if [[ "$NVIDIA" == "yes" ]]
+if [[ $NVIDIA == '1' ]]
 then
     pacman -S $myNvidia
 fi
