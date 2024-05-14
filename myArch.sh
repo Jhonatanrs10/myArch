@@ -108,8 +108,8 @@ EOF
 pacman -S $myBase
 echo "Digite (yes) para instalar os drivers proprietarios da Nvidia"
 read NVIDIA
-if [[ $NVIDIA == 'yes' ]]
-then
+if [ '$NVIDIA' == 'yes' ]; then
+do
     pacman -S $myNvidia
 fi
 systemctl enable NetworkManager bluetooth
