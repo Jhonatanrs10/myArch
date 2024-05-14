@@ -32,7 +32,7 @@ echo "Digite (yes) para criar uma particao Home separada"
 read HOME 
 
 # Configurando Particoes
-echo "Digite (yes) para formatar a particao EFI: (em caso de dualboot digite nao)"
+echo "Digite (yes) para formatar a particao EFI ($EFI):"
 read NEWEFI
 
 if [[ $NEWEFI == 'yes' ]]
@@ -54,7 +54,7 @@ then
     lsblk
     echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
     read HOME
-    echo "Digite (yes) para formatar a Home:"
+    echo "Digite (yes) para formatar a Home ($HOME):"
     read NEWHOME
     if [[ $NEWHOME == 'yes' ]]
     then
