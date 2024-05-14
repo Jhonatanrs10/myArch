@@ -35,7 +35,7 @@ read HOME
 echo "Digite (yes) para formatar a particao EFI ($EFI):"
 read NEWEFI
 
-if [[ $NEWEFI == 'yes' ]]
+if [[ "$NEWEFI" == "yes" ]]
 then
     mkfs.fat -F 32 "${EFI}"
 fi
@@ -49,14 +49,14 @@ mount "${ROOT}" /mnt
 mkdir -p /mnt/boot
 mkdir -p /mnt/home
 mount "${EFI}" /mnt/boot
-if [[ $HOME == 'yes' ]]
+if [[ "$HOME" == "yes" ]]
 then
     lsblk
     echo "Digite o caminho da particao Home(/home): (exemplo /dev/sda4)"
     read HOME
     echo "Digite (yes) para formatar a Home ($HOME):"
     read NEWHOME
-    if [[ $NEWHOME == 'yes' ]]
+    if [[ "$NEWHOME" == "yes" ]]
     then
         mkfs.ext4 "${HOME}"
     fi
@@ -108,8 +108,8 @@ EOF
 pacman -S $myBase
 echo "Digite (yes) para instalar os drivers proprietarios da Nvidia"
 read NVIDIA
-if [ '$NVIDIA' == 'yes' ]; then
-do
+if [[ "$NVIDIA" == "yes" ]]
+then
     pacman -S $myNvidia
 fi
 systemctl enable NetworkManager bluetooth
@@ -127,11 +127,11 @@ fi
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
+umount -a
 REALEND
 
 arch-chroot /mnt sh next.sh
 
 echo "Final Manual Commands
-umount -a
 reboot
 "
