@@ -15,6 +15,7 @@ do
     echo "Digite (yes) para sair do CFDISK"
     read EXITWHILE
 done
+
 clear
 lsblk
 sleep 2
