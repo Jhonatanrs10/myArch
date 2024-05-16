@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-myBase="pulseaudio pulseaudio-bluetooth samba xarchiver bzip2 cpio gzip lha xz lzop p7zip tar unace unrar zip unzip wget papirus-icon-theme breeze-gtk breeze-icons ntfs-3g dosfstools os-prober nano vim git neofetch gufw gst-plugins-ugly gst-plugins-good gst-plugins-base gst-plugins-bad gst-libav gstreamer ffmpeg fwupd samba gvfs-smb flatpak gvfs gvfs-mtp gvfs-smb udisks2 polkit polkit-gnome net-tools bluez bluez-tools bluez-utils joyutils man-db gnu-free-fonts ttf-liberation noto-fonts noto-fonts-cjk noto-fonts-emoji cmatrix htop leafpad"
-myI3wm="i3 picom lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager dmenu rofi i3lock i3status feh imagemagick nitrogen acpilight volumeicon pcmanfm scrot xsel terminology lxrandr lxappearance xfce4-taskmanager xfce4-power-manager xfce4-appfinder galculator system-config-printer blueman pavucontrol network-manager-applet wireless_tools xreader mpv gparted chromium gnome-keyring seahorse code qbittorrent"
-myXfce="xfce4 lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings font-manager xfce4-screenshooter xfce4-pulseaudio-plugin blueman pavucontrol thunar thunar-archive-plugin thunar-media-tags-plugin thunar-volman network-manager-applet xreader mpv galculator system-config-printer"
-myGnome="gnome gdm"
-myNvidia="nvidia nvidia-settings nvidia-utils lib32-nvidia-utils libva-nvidia-driver cuda opencl-nvidia lib32-opencl-nvidia vdpauinfo clinfo"
 
 loadkeys br-abnt
 while [ $EXITWHILE != 1 ];
@@ -72,12 +67,6 @@ read USER
 echo "Digite sua senha de usuario"
 read PASSWORD 
 
-echo "Escolha qual interface usar:"
-echo "1. I3WM"
-echo "2. GNOME"
-echo "3. NoDesktop"
-read DESKTOP
-
 # Linux Base
 pacstrap /mnt base base-devel linux linux-firmware networkmanager nano intel-ucode git sof-firmware grub efibootmgr ntfs-3g dosfstools os-prober --noconfirm --needed
 
@@ -88,6 +77,14 @@ genfstab /mnt >> /mnt/etc/fstab
 cat <<REALEND > /mnt/next.sh
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
+tee /etc/X11/xorg.conf.d/10-evdev.conf <<< 'Section "InputClass"
+Identifier "evdev keyboard catchall"
+MatchIsKeyboard "on"
+MatchDevicePath "/dev/input/event*"
+Driver "evdev"
+Option "XkbLayout" "br"
+Option "XkbVariant" "abnt2"
+EndSection'
 echo "Digite a senha do usuario Root"
 passwd
 useradd -m $USER
@@ -99,32 +96,17 @@ locale-gen
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
 echo "arch" > /etc/hostname
-echo "arch" > /etc/hostname
 cat <<EOF > /etc/hosts
 127.0.0.1	localhost
 ::1			localhost
 127.0.1.1	arch.localdomain	arch
 EOF
-pacman -S $myBase
-echo "Digite (1) para instalar os drivers proprietarios da Nvidia"
-read NVIDIA
-if [[ $NVIDIA == '1' ]]
-then
-    pacman -S $myNvidia
-fi
-systemctl enable NetworkManager bluetooth
-if [[ $DESKTOP == '1' ]]
-then 
-    pacman -S $myI3wm --noconfirm --needed
-    systemctl enable lightdm
-elif [[ $DESKTOP == '2' ]]
-then
-    pacman -S $myGnome --noconfirm --needed
-    systemctl enable gdm
-else
-    echo "Sem interface"
-fi
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+cp /etc/pacman.conf /etc/pacman.conf.bkp
+cp /etc/default/grub /etc/default/grub.bkp
+sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 10\nILoveCandy\nColor/g' /etc/pacman.conf
+sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+grub-install --target=x85_64-efi --efi-directory=/boot --bootloader-id=GRUB
+sed -i "/GRUB_DISABLE_OS_PROBER=false/"'s/^#//' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
 umount -a
