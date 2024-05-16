@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 loadkeys br-abnt
-while [ $EXITWHILE != 1 ];
+while [[ $EXITWHILE != 1 ]];
 do
     lsblk
     echo "[CFDISK] Digite o caminho da particao/disco: (exemplo /dev/sda)"
