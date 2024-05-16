@@ -27,10 +27,10 @@ echo "Digite (1) para criar uma particao Home separada"
 read HOME 
 
 # Configurando Particoes
-echo "Digite (1) para formatar a particao EFI ($EFI):"
+echo "Digite (1) para (NAO) formatar a particao EFI ($EFI):"
 read NEWEFI
 
-if [[ $NEWEFI == 1 ]]
+if [[ $NEWEFI != 1 ]]
 then
     mkfs.fat -F 32 "${EFI}"
 fi
@@ -67,6 +67,9 @@ read USER
 echo "Digite sua senha de usuario"
 read PASSWORD 
 
+echo "Digite a senha do ROOT"
+read ROOTPASSWORD
+
 # Linux Base
 pacstrap /mnt base base-devel linux linux-firmware networkmanager nano intel-ucode git sof-firmware grub efibootmgr ntfs-3g dosfstools os-prober --noconfirm --needed
 
@@ -86,8 +89,7 @@ Driver "evdev"
 Option "XkbLayout" "br"
 Option "XkbVariant" "abnt2"
 EndSection'
-echo "Digite a senha do usuario Root"
-passwd
+echo "root:$ROOTPASSWORD" | chpasswd
 useradd -m $USER
 usermod -aG wheel,storage,power,audio $USER
 echo $USER:$PASSWORD | chpasswd
@@ -109,6 +111,7 @@ sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 sed -i "/GRUB_DISABLE_OS_PROBER=false/"'s/^#//' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
+pacman -Syyu
 exit
 umount -a
 REALEND
