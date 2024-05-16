@@ -75,6 +75,7 @@ genfstab /mnt >> /mnt/etc/fstab
 
 # Next
 cat <<REALEND > /mnt/next.sh
+systemctl enable NetworkManager --now
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
 tee /etc/X11/xorg.conf.d/10-evdev.conf <<< 'Section "InputClass"
@@ -105,7 +106,7 @@ cp /etc/pacman.conf /etc/pacman.conf.bkp
 cp /etc/default/grub /etc/default/grub.bkp
 sed -i 's/#ParallelDownloads = 5/ParallelDownloads = 10\nILoveCandy\nColor/g' /etc/pacman.conf
 sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
-grub-install --target=x85_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 sed -i "/GRUB_DISABLE_OS_PROBER=false/"'s/^#//' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 exit
