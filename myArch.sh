@@ -118,6 +118,6 @@ REALEND
 
 arch-chroot /mnt sh next.sh
 
-echo "Final Manual Command teste
-reboot
-"
+echo "--------
+-reboot-
+--------"
