@@ -71,13 +71,14 @@ echo "Digite a senha do ROOT"
 read ROOTPASSWORD
 
 # Linux Base
-pacstrap /mnt base base-devel linux linux-firmware networkmanager nano intel-ucode git sof-firmware grub efibootmgr ntfs-3g dosfstools os-prober --noconfirm --needed
+pacstrap /mnt base linux linux-firmware --noconfirm --needed
 
 # Fstab
 genfstab /mnt >> /mnt/etc/fstab
 
 # Next
 cat <<REALEND > /mnt/next.sh
+pacman -S base-devel networkmanager nano intel-ucode git sof-firmware grub efibootmgr ntfs-3g dosfstools os-prober --noconfirm --needed
 systemctl enable NetworkManager --now
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
@@ -101,7 +102,7 @@ echo "KEYMAP=br-abnt2" >> /etc/vconsole.conf
 echo "arch" > /etc/hostname
 cat <<EOF > /etc/hosts
 127.0.0.1	localhost
-::1			localhost
+::1		localhost
 127.0.1.1	arch.localdomain	arch
 EOF
 cp /etc/pacman.conf /etc/pacman.conf.bkp
