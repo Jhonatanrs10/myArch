@@ -113,12 +113,10 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 sed -i "/GRUB_DISABLE_OS_PROBER=false/"'s/^#//' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 pacman -Syyu
-exit
-umount -a
+echo "
+Now [exit] and [umount -a] and then [reboot]"
 REALEND
 
 arch-chroot /mnt sh next.sh
 
-echo "--------
--reboot-
---------"
+
