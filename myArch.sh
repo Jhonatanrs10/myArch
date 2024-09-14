@@ -83,14 +83,6 @@ systemctl enable NetworkManager --now
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
 setxkbmap -model abnt2 -layout br
-tee /etc/X11/xorg.conf.d/10-evdev.conf <<< 'Section "InputClass"
-Identifier "evdev keyboard catchall"
-MatchIsKeyboard "on"
-MatchDevicePath "/dev/input/event*"
-Driver "evdev"
-Option "XkbLayout" "br"
-Option "XkbVariant" "abnt2"
-EndSection'
 echo "root:$ROOTPASSWORD" | chpasswd
 useradd -m $USER
 usermod -aG wheel,storage,power,audio $USER
